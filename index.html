@@ -1,107 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Clare 💖</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+<title>Clare 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow: hidden;
-    }
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+  }
 
-    .card {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      animation: float 3s ease-in-out infinite;
-    }
+  /* Floating hearts background */
+  .heart {
+    position: absolute;
+    bottom: -20px;
+    font-size: 20px;
+    animation: floatUp linear infinite;
+    opacity: 0.7;
+  }
 
-    h1 {
-      color: #ff4d6d;
-      margin-bottom: 10px;
+  @keyframes floatUp {
+    from {
+      transform: translateY(0);
+      opacity: 1;
     }
+    to {
+      transform: translateY(-110vh);
+      opacity: 0;
+    }
+  }
 
-    p {
-      font-size: 18px;
-      margin-bottom: 25px;
-    }
+  .card {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: float 3s ease-in-out infinite;
+    z-index: 2;
+  }
 
-    button {
-      padding: 12px 24px;
-      margin: 10px;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+  h1 {
+    color: #ff4d6d;
+    margin-bottom: 10px;
+    font-size: 32px;
+  }
 
-    button:hover {
-      transform: scale(1.1);
-    }
+  .name span {
+    opacity: 0;
+    animation: typeIn 0.5s forwards;
+  }
 
-    .yes {
-      background: #ff4d6d;
-      color: white;
-    }
+  @keyframes typeIn {
+    to { opacity: 1; }
+  }
 
-    .no {
-      background: #ccc;
-      color: #333;
-      position: relative;
-    }
+  p {
+    font-size: 18px;
+    margin-bottom: 25px;
+  }
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-  </style>
+  button {
+    padding: 12px 24px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.1);
+  }
+
+  .yes {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  .no {
+    background: #ccc;
+    color: #333;
+    position: relative;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="card">
-    <h1>Hey Baby 💕</h1>
-    <p>Will you be my Valentine?</p>
+<div class="card" id="card">
+  <h1 class="name" id="name"></h1>
+  <p>Will you be my Valentine? 💕</p>
 
-    <button class="yes" onclick="sayYes()">Yes 💖</button>
-    <button class="no" onmouseover="moveButton(this)">No 😅</button>
-  </div>
+  <button class="yes" onclick="sayYes()">Yes 💖</button>
+  <button class="no" onmouseover="moveButton(this)">No 😅</button>
+</div>
 
-  <!-- Confetti library -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+/* ===== Name typing animation ===== */
+const name = "Hey Clare 💕";
+const nameEl = document.getElementById("name");
 
-  <script>
-    function sayYes() {
-      confetti({
-        particleCount: 200,
-        spread: 120,
-        origin: { y: 0.6 }
-      });
+[...name].forEach((char, i) => {
+  const span = document.createElement("span");
+  span.textContent = char;
+  span.style.animationDelay = `${i * 0.15}s`;
+  nameEl.appendChild(span);
+});
 
-      document.querySelector('.card').innerHTML = `
-        <h1>Super!! 💘🎉</h1>
-        <p>You just put a smile on my face 😊</p>
-        <p>See you on Valentine’s ❤️</p>
-      `;
-    }
+/* ===== Floating hearts ===== */
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = 5 + Math.random() * 5 + "s";
+  heart.style.fontSize = 14 + Math.random() * 20 + "px";
+  document.body.appendChild(heart);
 
-    function moveButton(btn) {
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 200 - 100;
-      btn.style.transform = `translate(${x}px, ${y}px)`;
-    }
-  </script>
+  setTimeout(() => heart.remove(), 10000);
+}
+setInterval(createHeart, 500);
+
+/* ===== Simple confetti (offline) ===== */
+function confettiBurst() {
+  for (let i = 0; i < 80; i++) {
+    const conf = document.createElement("div");
+    conf.textContent = "🎉";
+    conf.style.position = "fixed";
+    conf.style.left = Math.random() * 100 + "vw";
+    conf.style.top = "-20px";
+    conf.style.fontSize = "20px";
+    conf.style.animation = "floatUp 2s linear forwards";
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 2000);
+  }
+}
+
+/* ===== Music using Web Audio API (offline) ===== */
+function playMusic() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = 523; // C5 note
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 1.5);
+}
+
+/* ===== Yes button ===== */
+function sayYes() {
+  playMusic();
+  confettiBurst();
+
+  document.getElementById("card").innerHTML = `
+    <h1>Yaaay!! 💘</h1>
+    <p>You just made me very happy 😊</p>
+    <p>See you on Valentine’s ❤️</p>
+  `;
+}
+
+/* ===== No button escape ===== */
+function moveButton(btn) {
+  const x = Math.random() * 200 - 100;
+  const y = Math.random() * 200 - 100;
+  btn.style.transform = `translate(${x}px, ${y}px)`;
+}
+</script>
 
 </body>
 </html>

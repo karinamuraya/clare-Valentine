@@ -21,10 +21,8 @@
   .heart {
     position: absolute;
     color: rgba(255, 77, 109, 0.7);
-    font-size: 20px;
-    animation: floatUp linear infinite;
-    z-index: 1; /* behind card */
     pointer-events: none;
+    z-index: 1;
   }
 
   .card {
@@ -34,7 +32,7 @@
     text-align: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     animation: float 3s ease-in-out infinite;
-    z-index: 10; /* always on top */
+    z-index: 10;
     position: relative;
   }
 
@@ -101,14 +99,12 @@
   <button class="no" onmouseover="moveButton(this)">No 😅</button>
 </div>
 
-<!-- Hidden audio for the song -->
 <audio id="loveSong" src="Snooze.mp3" type="audio/mpeg"></audio>
 
 <script>
-  /* Animate Clare letter-by-letter */
+  // Animate name
   const name = "Hey Baby 💕";
   const nameContainer = document.querySelector(".name");
-
   [...name].forEach((char, i) => {
     const span = document.createElement("span");
     span.textContent = char;
@@ -116,35 +112,52 @@
     nameContainer.appendChild(span);
   });
 
-  /* More floating hearts */
+  // Floating hearts everywhere
   function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
     heart.textContent = "💖";
-    
-    const size = Math.random() * 25 + 10; // random size
+
+    // Random initial position anywhere on screen
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = Math.random() * window.innerHeight + "px";
+
+    // Random size and opacity
+    const size = Math.random() * 25 + 10;
     heart.style.fontSize = `${size}px`;
-
-    heart.style.left = Math.random() * 100 + "vw";
-
-    // random animation duration & delay
-    const duration = Math.random() * 5 + 5; // 5-10s
-    const delay = Math.random() * 5; // 0-5s
-    heart.style.animationDuration = `${duration}s`;
-    heart.style.animationDelay = `${delay}s`;
+    heart.style.opacity = Math.random() * 0.6 + 0.4;
 
     document.body.appendChild(heart);
 
-    setTimeout(() => heart.remove(), (duration + delay) * 1000);
+    // Animate the heart
+    const speed = Math.random() * 1 + 0.5; // pixels per frame
+    const drift = (Math.random() - 0.5) * 1; // horizontal drift
+
+    function animate() {
+      let top = parseFloat(heart.style.top);
+      let left = parseFloat(heart.style.left);
+      top -= speed;
+      left += drift;
+      if (top < -50) {
+        top = window.innerHeight + 50;
+        left = Math.random() * window.innerWidth;
+      }
+      heart.style.top = top + "px";
+      heart.style.left = left + "px";
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Remove after long time (optional cleanup)
+    setTimeout(() => heart.remove(), 20000);
   }
 
-  // Create hearts faster for more density
-  setInterval(createHeart, 200);
+  // More hearts, faster
+  setInterval(createHeart, 150);
 
-  /* Yes button action */
+  // Yes button action
   function sayYes() {
-    document.getElementById("loveSong").play(); // play song
-
+    document.getElementById("loveSong").play();
     document.querySelector(".card").innerHTML = `
       <h1>Super!! 💘🎉</h1>
       <p>You just put a smile on my face 😊</p>
@@ -152,13 +165,18 @@
     `;
   }
 
-  /* Make No button move faster */
+  // Faster No button
   function moveButton(btn) {
-    const x = Math.random() * 300 - 150; // move farther
+    const x = Math.random() * 300 - 150;
     const y = Math.random() * 300 - 150;
     btn.style.transform = `translate(${x}px, ${y}px)`;
-    btn.style.transition = 'transform 0.1s ease-out'; // faster movement
+    btn.style.transition = 'transform 0.1s ease-out';
   }
+
+  // Resize handling
+  window.addEventListener("resize", () => {
+    // optional: could adjust positions if desired
+  });
 </script>
 
 </body>

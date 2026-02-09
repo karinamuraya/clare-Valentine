@@ -17,12 +17,14 @@
     overflow: hidden;
   }
 
-  /* Floating hearts */
+  /* Floating hearts behind the card */
   .heart {
     position: absolute;
     color: rgba(255, 77, 109, 0.5);
     font-size: 20px;
     animation: floatUp 8s linear infinite;
+    z-index: 1; /* behind card */
+    pointer-events: none;
   }
 
   @keyframes floatUp {
@@ -37,7 +39,8 @@
     text-align: center;
     box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     animation: float 3s ease-in-out infinite;
-    z-index: 10;
+    z-index: 10; /* always on top */
+    position: relative;
   }
 
   @keyframes float {
@@ -91,11 +94,13 @@
     position: relative;
   }
 
+  /* Confetti canvas on top of hearts but behind card */
   canvas {
     position: fixed;
     top: 0;
     left: 0;
     pointer-events: none;
+    z-index: 5;
   }
 </style>
 </head>
@@ -112,11 +117,8 @@
   <button class="no" onmouseover="moveButton(this)">No 😅</button>
 </div>
 
-<!-- 🎵 REAL SONG (offline) -->
-<audio>
-  <source id="loveSong" src="Snooze.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
+<!-- Hidden audio for the song -->
+<audio id="loveSong" src="Snooze.mp3" type="audio/mpeg"></audio>
 
 <script>
   /* Animate Clare letter-by-letter */
@@ -130,7 +132,7 @@
     nameContainer.appendChild(span);
   });
 
-  /* Floating hearts */
+  /* Floating hearts behind card */
   function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
@@ -143,7 +145,7 @@
   }
   setInterval(createHeart, 400);
 
-  /* Confetti */
+  /* Confetti setup */
   const canvas = document.getElementById("confetti");
   const ctx = canvas.getContext("2d");
   canvas.width = window.innerWidth;
@@ -152,6 +154,7 @@
   let confettiPieces = [];
 
   function launchConfetti() {
+    confettiPieces = [];
     for (let i = 0; i < 200; i++) {
       confettiPieces.push({
         x: Math.random() * canvas.width,
@@ -177,8 +180,9 @@
     requestAnimationFrame(drawConfetti);
   }
 
+  /* Yes button action */
   function sayYes() {
-    document.getElementById("loveSong").play();
+    document.getElementById("loveSong").play(); // play song
     launchConfetti();
     drawConfetti();
 
@@ -189,11 +193,18 @@
     `;
   }
 
+  /* No button avoidance */
   function moveButton(btn) {
     const x = Math.random() * 200 - 100;
     const y = Math.random() * 200 - 100;
     btn.style.transform = `translate(${x}px, ${y}px)`;
   }
+
+  /* Resize canvas on window resize */
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 </script>
 
 </body>

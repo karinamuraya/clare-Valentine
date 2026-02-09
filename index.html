@@ -82,12 +82,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-    function sayYes() {
-      confetti({
-        particleCount: 200,
-        spread: 120,
-        origin: { y: 0.6 }
-      });
+  function sayYes() {
+  confetti({
+    particleCount: 200,
+    spread: 120,
+    origin: { y: 0.6 }
+  });
+
+  setTimeout(() => {
+    window.location.href = "yes.html";
+  }, 1500);
+}
+
 
       document.querySelector('.card').innerHTML = `
         <h1>Yaaay!! 💘🎉</h1>

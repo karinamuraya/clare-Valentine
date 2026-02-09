@@ -20,16 +20,11 @@
   /* Floating hearts behind the card */
   .heart {
     position: absolute;
-    color: rgba(255, 77, 109, 0.5);
+    color: rgba(255, 77, 109, 0.7);
     font-size: 20px;
-    animation: floatUp 8s linear infinite;
+    animation: floatUp linear infinite;
     z-index: 1; /* behind card */
     pointer-events: none;
-  }
-
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) scale(1); opacity: 1; }
-    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
   }
 
   .card {
@@ -93,21 +88,10 @@
     color: #333;
     position: relative;
   }
-
-  /* Confetti canvas on top of hearts but behind card */
-  canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 5;
-  }
 </style>
 </head>
 
 <body>
-
-<canvas id="confetti"></canvas>
 
 <div class="card">
   <h1 class="name"></h1>
@@ -132,59 +116,34 @@
     nameContainer.appendChild(span);
   });
 
-  /* Floating hearts behind card */
+  /* More floating hearts */
   function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
     heart.textContent = "💖";
+    
+    const size = Math.random() * 25 + 10; // random size
+    heart.style.fontSize = `${size}px`;
+
     heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = Math.random() * 20 + 15 + "px";
+
+    // random animation duration & delay
+    const duration = Math.random() * 5 + 5; // 5-10s
+    const delay = Math.random() * 5; // 0-5s
+    heart.style.animationDuration = `${duration}s`;
+    heart.style.animationDelay = `${delay}s`;
+
     document.body.appendChild(heart);
 
-    setTimeout(() => heart.remove(), 8000);
-  }
-  setInterval(createHeart, 400);
-
-  /* Confetti setup */
-  const canvas = document.getElementById("confetti");
-  const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let confettiPieces = [];
-
-  function launchConfetti() {
-    confettiPieces = [];
-    for (let i = 0; i < 200; i++) {
-      confettiPieces.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 6 + 4,
-        dx: Math.random() * 4 - 2,
-        dy: Math.random() * 4 + 2,
-        color: `hsl(${Math.random() * 360},100%,60%)`
-      });
-    }
+    setTimeout(() => heart.remove(), (duration + delay) * 1000);
   }
 
-  // function drawConfetti() {
-  //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //   confettiPieces.forEach(p => {
-  //     ctx.beginPath();
-  //     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-  //     ctx.fillStyle = p.color;
-  //     ctx.fill();
-  //     p.x += p.dx;
-  //     p.y += p.dy;
-  //   });
-  //   requestAnimationFrame(drawConfetti);
-  // }
+  // Create hearts faster for more density
+  setInterval(createHeart, 200);
 
   /* Yes button action */
   function sayYes() {
     document.getElementById("loveSong").play(); // play song
-    launchConfetti();
-    drawConfetti();
 
     document.querySelector(".card").innerHTML = `
       <h1>Super!! 💘🎉</h1>
@@ -193,20 +152,13 @@
     `;
   }
 
-  /* No button avoidance */
-function moveButton(btn) {
-  const x = Math.random() * 300 - 150; // move farther horizontally
-  const y = Math.random() * 300 - 150; // move farther vertically
-  btn.style.transform = `translate(${x}px, ${y}px)`;
-  btn.style.transition = 'transform 0.1s ease-out'; // faster movement
-}
-
-
-  /* Resize canvas on window resize */
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
+  /* Make No button move faster */
+  function moveButton(btn) {
+    const x = Math.random() * 300 - 150; // move farther
+    const y = Math.random() * 300 - 150;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+    btn.style.transition = 'transform 0.1s ease-out'; // faster movement
+  }
 </script>
 
 </body>
